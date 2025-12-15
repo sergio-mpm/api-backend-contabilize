@@ -2,16 +2,17 @@ from sqlalchemy import Column, String, Integer, DateTime, Float
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from typing import Union
+from extensions import db
 
 from models import base
 
-class Usuario(base):
+class Usuario(db.Model):
     __tablename__ = 'usuarios'
 
-    cpf = Column("pk_usuario", Integer, primary_key=True, nullable=False)
-    nome = Column(String(150), nullable=False)
-    email = Column(String(150), nullable=True)
-    data_nascimento = Column(DateTime)
+    cpf = db.Column("pk_usuario", db.Integer, primary_key=True, nullable=False)
+    nome = db.Column(db.String(150), nullable=False)
+    email = db.Column(db.String(150), nullable=True)
+    data_nascimento = db.Column(db.DateTime)
 
     despesas = relationship(
         "Despesas",

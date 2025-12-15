@@ -41,3 +41,9 @@ def apresenta_usuario(usuarios: List[Usuario]):
 class UsuarioDeleteSchema(BaseModel):
     cpf: int = "12345678900"
     nome: str = "João da Silva"
+
+
+class UsuarioUpdateSchema(BaseModel):
+    cpf: int = "12345678900"
+    nome: str = "João da Silva"
+    email: str = "seuemail@email.com.br"

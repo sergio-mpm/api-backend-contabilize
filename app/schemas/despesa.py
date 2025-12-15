@@ -16,7 +16,7 @@ class DespesaSchema(BaseModel):
 
 
 class DespesaBuscaSchema(BaseModel):
-    nome: str = "Gasto xpto"
+    id: int = "001"
 
 
 class ListagemDespesasSchema(BaseModel):
@@ -49,6 +49,14 @@ class DespesaViewSchema(BaseModel):
 def get_nome_responsavel(self, obj):
     return obj.responsavel.nome
 
+
+class DespesaUpdateSchema(BaseModel):
+    nome: str = "gasto xpto"
+    valor: float = "35.90"
+    tipo: str = "variavel"
+    data_despesa: DateTime = "11/11/2025"
+    comentario: str = "Gasto xpto feito via internet"
+    responsavel: str = fields.Method("get_nome_responsavel")
 
 class DespesaDeleteSchema(BaseModel):
     statusCode: int

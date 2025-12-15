@@ -2,21 +2,23 @@ from sqlalchemy import Column, String, Integer, DateTime, Float, ForeignKey
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from typing import Union
+from extensions import db
 
 from models import base, usuario
 
-class Despesa(base):
+class Despesa(db.Model):
     __tablename__ = 'despesas'
 
-    id = Column("pk_despesa", Integer, primary_key=True, nullable=False)
-    nome = Column(String(150), nullable=False)
-    valor = Column(Float, nullable=False)
-    tipo = Column(String(50), nullable=False)
-    data_despesa = Column(DateTime, default=datetime.now())
-    comentario = Column(String(255), nullable=True)
+    #id = db.Column("pk_despesa", Integer, primary_key=True, nullable=False)
+    id = db.Column
+    nome = db.Column(db.String(150), nullable=False)
+    valor = db.Column(db.Float, nullable=False)
+    tipo = db.Column(db.String(50), nullable=False)
+    data_despesa = db.Column(db.Date, default=datetime.now())
+    comentario = db.Column(db.String(255), nullable=True)
 
     cpf_responsavel = Column(
-        Integer,
+        db.Integer,
         ForeignKey("usuarios.cpf"),
         unique=True,
         nullable=False
