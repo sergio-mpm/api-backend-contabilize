@@ -5,7 +5,7 @@ from marshmallow import Schema, fields
 from sqlalchemy import DateTime
 from models.despesa import Despesa
 
-from schemas import usuario
+from app.schemas import usuario_schema
 
 
 class DespesaSchema(BaseModel):

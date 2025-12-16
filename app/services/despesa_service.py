@@ -2,7 +2,7 @@ from app.models.despesa import Despesa
 from app.models.usuario import Usuario
 from app.extensions import db
 from datetime import datetime
-from sqlalchemy import *
+from sqlalchemy import func
 
 class DespesaService:
     def criar_despesa(self, data: dict) -> Despesa:
@@ -29,15 +29,21 @@ class DespesaService:
 
     def listar_despesas(self):
         return Despesa.query.all()
+    
+    def buscar_despesa(self, id: int):
+        despesa = Despesa.query.get(id)
+        if not despesa:
+            raise ValueError("Despesa não encontrada")
+        return despesa
 
     def listar_despesas_por_usuario(self, cpf: int):
-        return Despesa.query.filter_by(Despesa.cpf_responsavel==cpf).all()
+        return Despesa.query.filter(Despesa.cpf_responsavel==cpf).all()
 
     def listar_despesas_por_tipo(self, tipo: str):
-        return Despesa.query.filter_by(Despesa.tipo==tipo).all()
+        return Despesa.query.filter(Despesa.tipo==tipo).all()
     
     def lista_despesas_por_data(self, data_despesa: datetime):
-        return Despesa.query.filter_by(Despesa.data_despesa==data_despesa).all()
+        return Despesa.query.filter(Despesa.data_despesa==data_despesa).all()
     
     def listar_por_periodo(self, data_inicio: datetime, data_fim: datetime):
         return (Despesa.query.filter(Despesa.data_despesa.between(data_inicio, data_fim)).all())

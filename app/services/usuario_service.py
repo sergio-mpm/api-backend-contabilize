@@ -1,9 +1,8 @@
 from app.models.usuario import Usuario
-from app.models.despesa import Despesa
 from app.extensions import db
 
 class UsuarioService:
-    def cadastra_usuario(self, data:dict) -> Usuario:
+    def criar_usuario(self, data:dict) -> Usuario:
         if data["cpf"] <= 0:
             raise ValueError("CPF Inválido")
         
@@ -20,7 +19,7 @@ class UsuarioService:
     def listar_usuarios(self):
         return Usuario.query.all()
     
-    def apresenta_usuario(self, cpf: int) -> Usuario:
+    def obter_usuario(self, cpf: int) -> Usuario:
         usuario = Usuario.query.get(cpf)
         if not usuario:
             raise ValueError("Usuario não encontrado")
@@ -44,8 +43,9 @@ class UsuarioService:
             usuario.data_nascimento = data["data_nascimento"]
 
         db.session.commit()
+        return usuario
 
-    def exclui_usuario(self, cpf:int) -> None:
+    def excluir_usuario(self, cpf:int) -> None:
         usuario = Usuario.query.get(cpf)
         if not usuario:
             raise ValueError("Usuario não encontrado")
