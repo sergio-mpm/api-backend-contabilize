@@ -1,0 +1,54 @@
+from app.models.usuario import Usuario
+from app.models.despesa import Despesa
+from app.extensions import db
+
+class UsuarioService:
+    def cadastra_usuario(self, data:dict) -> Usuario:
+        if data["cpf"] <= 0:
+            raise ValueError("CPF Inválido")
+        
+        usuario = Usuario.query.get(data["cpf"])
+        if usuario:
+            raise ValueError("Usuário já cadastrado")
+        
+        usuario = Usuario(**data)
+        db.session.add(usuario)
+        db.session.commit()
+
+        return usuario
+
+    def listar_usuarios(self):
+        return Usuario.query.all()
+    
+    def apresenta_usuario(self, cpf: int) -> Usuario:
+        usuario = Usuario.query.get(cpf)
+        if not usuario:
+            raise ValueError("Usuario não encontrado")
+        
+        return usuario
+    
+    def atualiza_cadastro_usuario(self, cpf: int, data: dict) -> Usuario:
+        usuario = Usuario.query.get(cpf)
+        if not usuario:
+            raise ValueError("Usuario não encontrado")
+        
+        if "nome" in data:
+            if data["nome"] is None:
+                raise ValueError("Nome não pode ser vazio")
+            usuario.nome = data["nome"]
+
+        if "email" in data:
+            usuario.email = data["email"]
+
+        if "data_nascimento" in data:
+            usuario.data_nascimento = data["data_nascimento"]
+
+        db.session.commit()
+
+    def exclui_usuario(self, cpf:int) -> None:
+        usuario = Usuario.query.get(cpf)
+        if not usuario:
+            raise ValueError("Usuario não encontrado")
+        
+        db.session.delete(usuario)
+        db.session.commit()

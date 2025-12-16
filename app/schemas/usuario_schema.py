@@ -5,12 +5,13 @@ from sqlalchemy import DateTime
 from models.usuario import Usuario
 
 from schemas import DespesaSchema
+from datetime import date
 
 class UsuarioSchema(BaseModel):
     cpf: int = "12345678900"
     nome: str = "João da Silva"
     email: str = "seuemail@email.com.br"
-    data_nascimento: DateTime = "01/02/1991"
+    data_nascimento: date = "01/02/1991"
 
 
 class UsuarioBuscaSchema(BaseModel):
@@ -47,3 +48,4 @@ class UsuarioUpdateSchema(BaseModel):
     cpf: int = "12345678900"
     nome: str = "João da Silva"
     email: str = "seuemail@email.com.br"
+    data_nascimento: date = "24/09/1993"

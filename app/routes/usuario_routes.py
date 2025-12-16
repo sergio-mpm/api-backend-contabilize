@@ -3,7 +3,7 @@ from sqlalchemy.exc import IntegrityError
 
 from app.extensions import db
 from app.models.usuario import Usuario
-from app.schemas.usuario import UsuarioDeleteSchema, UsuarioSchema, UsuarioUpdateSchema, UsuarioViewSchema
+from app.schemas.usuario_schema import UsuarioBuscaSchema, UsuarioSchema, UsuarioUpdateSchema, UsuarioViewSchema
 
 
 usuario_tag = Tag(
@@ -42,7 +42,7 @@ def adiciona_usuario(body: UsuarioSchema):
         tags=[usuario_tag],
         responses={200: UsuarioViewSchema, 404: dict}
 )
-def update_usuario(path: UsuarioDeleteSchema, form: UsuarioUpdateSchema):
+def update_usuario(path: UsuarioBuscaSchema, form: UsuarioUpdateSchema):
     usuario = Usuario.query.filter_by(cpf=path.cpf).first()
     if not usuario:
         return {"message": "Usuário não encontrado"}, 404
@@ -59,7 +59,7 @@ def update_usuario(path: UsuarioDeleteSchema, form: UsuarioUpdateSchema):
     tags=[usuario_tag],
     responses={200: dict, 404: dict}
 )
-def delete_usuario(path: UsuarioDeleteSchema):
+def delete_usuario(path: UsuarioBuscaSchema):
     usuario = Usuario.query.filter_by(cpf=path.cpf).first()
     if not usuario:
         return {"message": "Usuário não encontrado"}, 404
@@ -74,7 +74,7 @@ def delete_usuario(path: UsuarioDeleteSchema):
     tags=[usuario_tag],
     responses={200: UsuarioViewSchema, 404: dict}
 )
-def get_usuario(path: UsuarioDeleteSchema):
+def get_usuario(path: UsuarioBuscaSchema):
     usuario = Usuario.query.filter_by(cpf=path.cpf).first()
     if not usuario:
         return {"message": "Usuário não encontrado"}, 404

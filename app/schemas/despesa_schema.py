@@ -58,11 +58,6 @@ class DespesaUpdateSchema(BaseModel):
     comentario: str = "Gasto xpto feito via internet"
     responsavel: str = fields.Method("get_nome_responsavel")
 
-class DespesaDeleteSchema(BaseModel):
-    statusCode: int
-    message: str
-    nome: str
-
 
 def apresenta_despesa(despesa: Despesa):
     return {
