@@ -119,3 +119,4 @@ class DespesaService:
         )
         #Retorna despesas totais por periodo
         return despesasTotaisPeriodo or 0.0
+    
