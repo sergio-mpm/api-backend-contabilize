@@ -2,9 +2,9 @@ from pydantic import BaseModel
 from typing import Optional, List
 
 from sqlalchemy import DateTime
-from models.usuario import Usuario
+from ..models.usuario import Usuario
 
-from schemas import DespesaSchema
+from ..schemas import despesa_schema
 from datetime import date
 
 class UsuarioSchema(BaseModel):

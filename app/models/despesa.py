@@ -2,15 +2,14 @@ from sqlalchemy import Column, String, Integer, DateTime, Float, ForeignKey
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from typing import Union
-from extensions import db
+from ..extensions import db
 
-from models import base, usuario
+from ..models import base, usuario
 
 class Despesa(db.Model):
     __tablename__ = 'despesas'
 
-    #id = db.Column("pk_despesa", Integer, primary_key=True, nullable=False)
-    id = db.Column
+    id = db.Column("pk_despesa", Integer, primary_key=True, nullable=False)
     nome = db.Column(db.String(150), nullable=False)
     valor = db.Column(db.Float, nullable=False)
     tipo = db.Column(db.String(50), nullable=False)

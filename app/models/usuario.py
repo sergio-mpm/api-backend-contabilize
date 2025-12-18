@@ -2,9 +2,9 @@ from sqlalchemy import Column, String, Integer, DateTime, Float
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from typing import Union
-from extensions import db
+from ..extensions import db
 
-from models import base
+from ..models import base
 
 class Usuario(db.Model):
     __tablename__ = 'usuarios'

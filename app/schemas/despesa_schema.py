@@ -3,7 +3,7 @@ from typing import Optional, List
 from marshmallow import Schema, fields
 
 from sqlalchemy import DateTime
-from models.despesa import Despesa
+from ..models.despesa import Despesa
 
 from app.schemas import usuario_schema
 
