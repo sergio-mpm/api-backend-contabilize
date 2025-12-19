@@ -1,70 +1,92 @@
 from pydantic import BaseModel
 from typing import Optional, List
 from marshmallow import Schema, fields
+from datetime import datetime
 
-from sqlalchemy import DateTime
 from ..models.despesa import Despesa
 
 from app.schemas import usuario_schema
 
 
 class DespesaSchema(BaseModel):
-    nome: str = "Compra Lanche"
-    valor: float = "35.90"
-    tipo: str = "variavel"
-    data_despesa: DateTime = "11/11/2025"
+    nome: str
+    valor: float
+    tipo: str
+    data_despesa: datetime = datetime.now
 
 
 class DespesaBuscaSchema(BaseModel):
-    id: int = "001"
+    id: int = 1
 
 
 class ListagemDespesasSchema(BaseModel):
-    despesas:List[DespesaSchema]
+    despesas: List[DespesaSchema]
 
 
-def apresenta_despesas(despesas: List[Despesa]):
-    result = []
-    for despesa in despesas:
-        result.append({
-            "nome": despesa.nome,
-            "valor": despesa.valor,
-            "tipo": despesa.tipo,
-            "data_despesa": despesa.data_despesa
-        })
+class UsuarioTotalPathSchema(BaseModel):
+    cpf: str
 
-    return {"despesa": result}
+
+class TipoTotalPathSchema(BaseModel):
+    tipo: str
 
 
 class DespesaViewSchema(BaseModel):
-    id: int = "1"
-    nome: str = "gasto xpto"
-    valor: float = "35.90"
-    tipo: str = "variavel"
-    data_despesa: DateTime = "11/11/2025"
-    comentario: str = "Gasto xpto feito via internet"
-    responsavel: str = fields.Method("get_nome_responsavel")
+    id: int
+    nome: str
+    valor: float
+    tipo: str
+    data_despesa: datetime
+    comentario: str | None = None
+    responsavel: str | None = None
 
+
+class DespesaViewUsuarioTotalSchema(BaseModel):
+    cpf: str
+    total: float
+
+
+class DespesaViewTipoTotalSchema(BaseModel):
+    typo: str
+    total: float
+
+
+def apresenta_despesas(despesas: List[Despesa]) -> dict:
+    return {
+        "despesas": [
+            {
+                "id": d.id,
+                "nome": d.nome,
+                "valor": d.valor,
+                "tipo": d.tipo,
+                "data_despesa": d.data_despesa,
+                "comentario": getattr(d, "comentario", None),
+                "responsavel": getattr(d.responsavel, "nome", None)
+            }
+            for d in despesas
+        ]
+    }
 
 def get_nome_responsavel(self, obj):
     return obj.responsavel.nome
 
 
 class DespesaUpdateSchema(BaseModel):
-    nome: str = "gasto xpto"
-    valor: float = "35.90"
-    tipo: str = "variavel"
-    data_despesa: DateTime = "11/11/2025"
-    comentario: str = "Gasto xpto feito via internet"
-    responsavel: str = fields.Method("get_nome_responsavel")
+    nome: str
+    valor: float
+    tipo: str
+    data_despesa: datetime
+    comentario: str | None = None
+    responsavel: str | None = None
 
 
-def apresenta_despesa(despesa: Despesa):
+def apresenta_despesa(despesa: Despesa) -> dict:
     return {
         "id": despesa.id,
         "nome": despesa.nome,
         "valor": despesa.valor,
         "tipo": despesa.tipo,
         "data_despesa": despesa.data_despesa,
-        "responsavel": fields.Method("get_nome_responsavel")
+        "comentario": getattr(despesa, "comentario", None),
+        "responsavel": getattr(despesa.responsavel, "nome", None)
     }

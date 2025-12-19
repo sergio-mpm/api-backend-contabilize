@@ -9,7 +9,7 @@ from ..models import base
 class Usuario(db.Model):
     __tablename__ = 'usuarios'
 
-    cpf = db.Column("pk_usuario", db.Integer, primary_key=True, nullable=False)
+    cpf = db.Column("pk_usuario", db.String(11), primary_key=True, nullable=False)
     nome = db.Column(db.String(150), nullable=False)
     email = db.Column(db.String(150), nullable=True)
     data_nascimento = db.Column(db.DateTime)
@@ -21,7 +21,7 @@ class Usuario(db.Model):
     )
 
 
-    def __init__(self, cpf:int, nome:str, email:str, data_nascimento:DateTime):
+    def __init__(self, cpf:str, nome:str, email:str, data_nascimento:DateTime):
         """
             instancia um usuario no sistema
 
@@ -35,3 +35,12 @@ class Usuario(db.Model):
         self.nome = nome
         self.email = email
         self.data_nascimento = data_nascimento
+
+    def to_dict(self):
+        return {
+            "cpf": self.cpf,
+            "nome": self.nome,
+            "email": self.email,
+            "data_nascimento": self.data_nascimento,
+            "despesas": self.despesas
+        }

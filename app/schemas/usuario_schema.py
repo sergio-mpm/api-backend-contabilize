@@ -5,17 +5,17 @@ from sqlalchemy import DateTime
 from ..models.usuario import Usuario
 
 from ..schemas import despesa_schema
-from datetime import date
+from datetime import datetime
 
 class UsuarioSchema(BaseModel):
-    cpf: int = "12345678900"
+    cpf: str = "12345678900"
     nome: str = "João da Silva"
     email: str = "seuemail@email.com.br"
-    data_nascimento: date = "01/02/1991"
+    data_nascimento: datetime = "01/02/1991"
 
 
 class UsuarioBuscaSchema(BaseModel):
-    cpf: int = "12345678900"
+    cpf: str = "12345678900"
 
 
 class ListagemUsuariosSchema(BaseModel):
@@ -23,7 +23,7 @@ class ListagemUsuariosSchema(BaseModel):
 
 
 class UsuarioViewSchema(BaseModel):
-    cpf: int = "12345678900"
+    cpf: str = "12345678900"
     nome: str = "João da Silva"
     email: str = "seuemail@email.com.br"
 
@@ -40,12 +40,12 @@ def apresenta_usuario(usuarios: List[Usuario]):
 
 
 class UsuarioDeleteSchema(BaseModel):
-    cpf: int = "12345678900"
+    cpf: str = "12345678900"
     nome: str = "João da Silva"
 
 
 class UsuarioUpdateSchema(BaseModel):
-    cpf: int = "12345678900"
+    cpf: str = "12345678900"
     nome: str = "João da Silva"
     email: str = "seuemail@email.com.br"
-    data_nascimento: date = "24/09/1993"
+    data_nascimento: datetime = "24/09/1993"

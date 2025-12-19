@@ -36,7 +36,7 @@ class DespesaService:
             raise ValueError("Despesa não encontrada")
         return despesa
 
-    def listar_despesas_por_usuario(self, cpf: int):
+    def listar_despesas_por_usuario(self, cpf: str):
         return Despesa.query.filter(Despesa.cpf_responsavel==cpf).all()
 
     def listar_despesas_por_tipo(self, tipo: str):

@@ -2,12 +2,17 @@ from flask_openapi3 import APIBlueprint, Tag
 from datetime import datetime
 
 from app.services.despesa_service import DespesaService
+from app.schemas.error_schema import ErrorSchema
 from app.schemas.despesa_schema import (
     DespesaSchema,
     DespesaUpdateSchema,
     DespesaViewSchema,
     DespesaBuscaSchema,
-    ListagemDespesasSchema
+    DespesaViewTipoTotalSchema,
+    DespesaViewUsuarioTotalSchema,
+    ListagemDespesasSchema,
+    TipoTotalPathSchema,
+    UsuarioTotalPathSchema
 )
 
 
@@ -20,7 +25,7 @@ despesa_bp = APIBlueprint(
     "despesas",
     __name__,
     url_prefix="/despesas",
-    tags=[despesa_tag]
+    abp_tags=[despesa_tag]
 )
 
 service = DespesaService()
@@ -31,7 +36,7 @@ service = DespesaService()
 # =========================
 @despesa_bp.post(
     "",
-    responses={200: DespesaViewSchema, 400: dict}
+    responses={200: DespesaViewSchema, 400: ErrorSchema}
 )
 def criar_despesa(body: DespesaSchema):
     """
@@ -39,7 +44,7 @@ def criar_despesa(body: DespesaSchema):
     """
     try:
         despesa = service.criar_despesa(body.model_dump())
-        return despesa, 201
+        return despesa, 200
     except ValueError as e:
         return {"message": str(e)}, 400
 
@@ -64,7 +69,7 @@ def listar_despesas():
 # =========================
 @despesa_bp.get(
     "/<int:id>",
-    responses={200: DespesaViewSchema, 404: dict}
+    responses={200: DespesaViewSchema, 404: ErrorSchema}
 )
 def buscar_despesa(path: DespesaBuscaSchema):
     """
@@ -82,7 +87,7 @@ def buscar_despesa(path: DespesaBuscaSchema):
 # =========================
 @despesa_bp.put(
     "/<int:id>",
-    responses={200: DespesaViewSchema, 404: dict}
+    responses={200: DespesaViewSchema, 404: ErrorSchema}
 )
 def atualizar_despesa(path: DespesaBuscaSchema, body: DespesaUpdateSchema):
     """
@@ -103,7 +108,7 @@ def atualizar_despesa(path: DespesaBuscaSchema, body: DespesaUpdateSchema):
 # =========================
 @despesa_bp.delete(
     "/<int:id>",
-    responses={204: None, 404: dict}
+    responses={204: None, 404: ErrorSchema}
 )
 def excluir_despesa(path: DespesaBuscaSchema):
     """
@@ -127,8 +132,11 @@ def total_despesas():
     return {"total": service.calcula_despesas_totais()}, 200
 
 
-@despesa_bp.get("/total/usuario/<int:cpf>")
-def total_por_usuario(path):
+@despesa_bp.get(
+        "/total/usuario/<int:cpf>",
+        responses={200: DespesaViewUsuarioTotalSchema}
+)
+def total_por_usuario(path: UsuarioTotalPathSchema):
     """
     Total de despesas por usuário
     """
@@ -138,8 +146,11 @@ def total_por_usuario(path):
     }, 200
 
 
-@despesa_bp.get("/total/tipo/<string:tipo>")
-def total_por_tipo(path):
+@despesa_bp.get(
+        "/total/tipo/<string:tipo>",
+        responses={200: DespesaViewTipoTotalSchema}
+)
+def total_por_tipo(path: TipoTotalPathSchema):
     """
     Total de despesas por tipo
     """

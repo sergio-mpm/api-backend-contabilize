@@ -1,7 +1,9 @@
 from flask_openapi3 import APIBlueprint, Tag
 
 from app.services.usuario_service import UsuarioService
+from app.schemas.error_schema import ErrorSchema
 from app.schemas.usuario_schema import (
+    ListagemUsuariosSchema,
     UsuarioSchema,
     UsuarioUpdateSchema,
     UsuarioViewSchema,
@@ -18,7 +20,7 @@ usuario_bp = APIBlueprint(
     "usuarios",
     __name__,
     url_prefix="/usuarios",
-    tags=[usuario_tag]
+    abp_tags=[usuario_tag]
 )
 
 service = UsuarioService()
@@ -29,7 +31,7 @@ service = UsuarioService()
 # =========================
 @usuario_bp.post(
     "",
-    responses={201: UsuarioViewSchema, 400: dict}
+    responses={201: UsuarioViewSchema, 400: ErrorSchema}
 )
 def cadastrar_usuario(body: UsuarioSchema):
     """
@@ -47,7 +49,7 @@ def cadastrar_usuario(body: UsuarioSchema):
 # =========================
 @usuario_bp.get(
     "",
-    responses={200: list[UsuarioViewSchema]}
+    responses={200: ListagemUsuariosSchema}
 )
 def listar_usuarios():
     """
@@ -61,7 +63,7 @@ def listar_usuarios():
 # =========================
 @usuario_bp.get(
     "/<int:cpf>",
-    responses={200: UsuarioViewSchema, 404: dict}
+    responses={200: UsuarioViewSchema, 404: ErrorSchema}
 )
 def apresentar_usuario(path: UsuarioBuscaSchema):
     """
@@ -79,7 +81,7 @@ def apresentar_usuario(path: UsuarioBuscaSchema):
 # =========================
 @usuario_bp.put(
     "/<int:cpf>",
-    responses={200: UsuarioViewSchema, 404: dict}
+    responses={200: UsuarioViewSchema, 404: ErrorSchema}
 )
 def atualizar_usuario(path: UsuarioBuscaSchema, body: UsuarioUpdateSchema):
     """
@@ -100,7 +102,7 @@ def atualizar_usuario(path: UsuarioBuscaSchema, body: UsuarioUpdateSchema):
 # =========================
 @usuario_bp.delete(
     "/<int:cpf>",
-    responses={204: None, 404: dict}
+    responses={204: None, 404: ErrorSchema}
 )
 def excluir_usuario(path: UsuarioBuscaSchema):
     """

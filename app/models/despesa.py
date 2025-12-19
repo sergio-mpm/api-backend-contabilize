@@ -13,24 +13,22 @@ class Despesa(db.Model):
     nome = db.Column(db.String(150), nullable=False)
     valor = db.Column(db.Float, nullable=False)
     tipo = db.Column(db.String(50), nullable=False)
-    data_despesa = db.Column(db.Date, default=datetime.now())
+    data_despesa = db.Column(db.Date, default=datetime.now)
     comentario = db.Column(db.String(255), nullable=True)
 
     cpf_responsavel = Column(
-        db.Integer,
+        db.String(11),
         ForeignKey("usuarios.cpf"),
-        unique=True,
         nullable=False
     )
 
     responsavel = relationship("Usuario", back_populates="despesas")
 
-    def __init__(self, id:int, nome:str, valor:float, tipo:str, comentario:str, cpf_responsavel:int, data_despesa:Union[DateTime, None] = None):
+    def __init__(self, nome:str, valor:float, tipo:str, comentario:str, cpf_responsavel:str, data_despesa:Union[DateTime, None] = None):
         """
             Insere o registro de uma despesa realizada
         """
 
-        self.id = id
         self.nome = nome
         self.valor = valor
         self.tipo = tipo
@@ -39,3 +37,14 @@ class Despesa(db.Model):
 
         if data_despesa:
             self.data_despesa = data_despesa
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "nome": self.nome,
+            "valor": self.valor,
+            "tipo": self.tipo,
+            "data_despesa": self.data_despesa,
+            "comentario": self.comentario,
+            "cpf_responsavel": self.cpf_responsavel
+        }

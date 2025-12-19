@@ -26,7 +26,7 @@ class UsuarioService:
         
         return usuario
     
-    def atualiza_cadastro_usuario(self, cpf: int, data: dict) -> Usuario:
+    def atualiza_cadastro_usuario(self, cpf: str, data: dict) -> Usuario:
         usuario = Usuario.query.get(cpf)
         if not usuario:
             raise ValueError("Usuario não encontrado")
@@ -45,7 +45,7 @@ class UsuarioService:
         db.session.commit()
         return usuario
 
-    def excluir_usuario(self, cpf:int) -> None:
+    def excluir_usuario(self, cpf:str) -> None:
         usuario = Usuario.query.get(cpf)
         if not usuario:
             raise ValueError("Usuario não encontrado")
