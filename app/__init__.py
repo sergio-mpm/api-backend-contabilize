@@ -12,7 +12,7 @@ def create_app():
     app = OpenAPI(__name__, info=info)
 
     app.config.from_object(Config)
-    CORS(app)
+    CORS(app, resources={r"/*": {"origins": "*"}})
 
     db.init_app(app)
     migrate.init_app(app, db)

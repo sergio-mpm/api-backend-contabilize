@@ -9,7 +9,7 @@ from ..models import base
 class Usuario(db.Model):
     __tablename__ = 'usuarios'
 
-    cpf = db.Column("pk_usuario", db.String(11), primary_key=True, nullable=False)
+    cpf = db.Column(db.String(11), primary_key=True, nullable=False)
     nome = db.Column(db.String(150), nullable=False)
     email = db.Column(db.String(150), nullable=True)
     data_nascimento = db.Column(db.DateTime)
