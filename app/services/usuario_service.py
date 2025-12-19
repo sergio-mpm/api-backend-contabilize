@@ -3,7 +3,8 @@ from app.extensions import db
 
 class UsuarioService:
     def criar_usuario(self, data:dict) -> Usuario:
-        if data["cpf"] <= 0:
+        cpf = data.get("cpf", "")
+        if not cpf or len(cpf) != 11:
             raise ValueError("CPF Inválido")
         
         usuario = Usuario.query.get(data["cpf"])

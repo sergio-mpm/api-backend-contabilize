@@ -38,7 +38,7 @@ def cadastrar_usuario(body: UsuarioSchema):
     Cadastra um novo usuário
     """
     try:
-        usuario = service.cadastra_usuario(body.model_dump())
+        usuario = service.criar_usuario(body.model_dump())
         return usuario, 201
     except ValueError as e:
         return {"message": str(e)}, 400
@@ -70,7 +70,7 @@ def apresentar_usuario(path: UsuarioBuscaSchema):
     Retorna um usuário pelo CPF
     """
     try:
-        usuario = service.apresenta_usuario(path.cpf)
+        usuario = service.obter_usuario(path.cpf)
         return usuario, 200
     except ValueError as e:
         return {"message": str(e)}, 404
@@ -109,7 +109,7 @@ def excluir_usuario(path: UsuarioBuscaSchema):
     Exclui um usuário
     """
     try:
-        service.exclui_usuario(path.cpf)
+        service.excluir_usuario(path.cpf)
         return "", 204
     except ValueError as e:
         return {"message": str(e)}, 404
