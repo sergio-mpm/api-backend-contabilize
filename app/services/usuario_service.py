@@ -20,7 +20,7 @@ class UsuarioService:
     def listar_usuarios(self):
         return Usuario.query.all()
     
-    def obter_usuario(self, cpf: int) -> Usuario:
+    def obter_usuario(self, cpf: str) -> Usuario:
         usuario = Usuario.query.get(cpf)
         if not usuario:
             raise ValueError("Usuario não encontrado")
