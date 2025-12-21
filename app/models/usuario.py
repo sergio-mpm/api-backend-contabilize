@@ -14,9 +14,9 @@ class Usuario(db.Model):
     email = db.Column(db.String(150), nullable=True)
     data_nascimento = db.Column(db.DateTime)
 
-    despesas = relationship(
-        "Despesas",
-        back_populates="responsavel",
+    despesas = db.relationship(
+        "Despesa",
+        back_populates="usuario",
         cascade="all, delete-orphan"
     )
 

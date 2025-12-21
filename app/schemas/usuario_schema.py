@@ -11,21 +11,29 @@ class UsuarioSchema(BaseModel):
     cpf: str = "12345678900"
     nome: str = "João da Silva"
     email: str = "seuemail@email.com.br"
-    data_nascimento: datetime = "01/02/1991"
+    data_nascimento: datetime = "1991-09-01"
+    
+    model_config = {
+        "from_attributes": True
+    }
 
 
 class UsuarioBuscaSchema(BaseModel):
     cpf: str = "12345678900"
 
 
-class ListagemUsuariosSchema(BaseModel):
-    usuarios: List[UsuarioSchema]
-
-
 class UsuarioViewSchema(BaseModel):
     cpf: str = "12345678900"
     nome: str = "João da Silva"
     email: str = "seuemail@email.com.br"
+    
+    model_config = {
+        "from_attributes": True
+    }
+
+
+class ListagemUsuariosSchema(BaseModel):
+    usuarios: List[UsuarioSchema]
 
 
 def apresenta_usuario(usuarios: List[Usuario]):
@@ -48,4 +56,4 @@ class UsuarioUpdateSchema(BaseModel):
     cpf: str = "12345678900"
     nome: str = "João da Silva"
     email: str = "seuemail@email.com.br"
-    data_nascimento: datetime = "24/09/1993"
+    data_nascimento: datetime = "1993-09-24"

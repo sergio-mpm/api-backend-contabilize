@@ -9,22 +9,25 @@ from ..models import base, usuario
 class Despesa(db.Model):
     __tablename__ = 'despesas'
 
-    id = db.Column("pk_despesa", Integer, primary_key=True, nullable=False)
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
     nome = db.Column(db.String(150), nullable=False)
     valor = db.Column(db.Float, nullable=False)
     tipo = db.Column(db.String(50), nullable=False)
     data_despesa = db.Column(db.Date, default=datetime.now)
     comentario = db.Column(db.String(255), nullable=True)
 
-    cpf_responsavel = Column(
+    cpf = Column(
         db.String(11),
         ForeignKey("usuarios.cpf"),
         nullable=False
     )
 
-    responsavel = relationship("Usuario", back_populates="despesas")
+    usuario = db.relationship(
+        "Usuario",
+        back_populates="despesas"
+    )
 
-    def __init__(self, nome:str, valor:float, tipo:str, comentario:str, cpf_responsavel:str, data_despesa:Union[DateTime, None] = None):
+    def __init__(self, nome:str, valor:float, tipo:str, comentario:str, cpf:str, data_despesa:Union[DateTime, None] = None):
         """
             Insere o registro de uma despesa realizada
         """
@@ -33,7 +36,7 @@ class Despesa(db.Model):
         self.valor = valor
         self.tipo = tipo
         self.comentario = comentario
-        self.cpf_responsavel = cpf_responsavel
+        self.cpf = cpf
 
         if data_despesa:
             self.data_despesa = data_despesa
@@ -46,5 +49,5 @@ class Despesa(db.Model):
             "tipo": self.tipo,
             "data_despesa": self.data_despesa,
             "comentario": self.comentario,
-            "cpf_responsavel": self.cpf_responsavel
+            "cpf": self.cpf
         }

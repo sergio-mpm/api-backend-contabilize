@@ -1,10 +1,13 @@
 from flask_openapi3 import APIBlueprint, Tag
+from flask_openapi3 import openapi
 from datetime import datetime
 
 from app.services.despesa_service import DespesaService
 from app.schemas.error_schema import ErrorSchema
 from app.schemas.despesa_schema import (
+    DespesaDeleteSchema,
     DespesaSchema,
+    DespesaTotalSchema,
     DespesaUpdateSchema,
     DespesaViewSchema,
     DespesaBuscaSchema,
@@ -14,6 +17,7 @@ from app.schemas.despesa_schema import (
     TipoTotalPathSchema,
     UsuarioTotalPathSchema
 )
+from app.services.usuario_service import UsuarioService
 
 
 despesa_tag = Tag(
@@ -28,14 +32,15 @@ despesa_bp = APIBlueprint(
     abp_tags=[despesa_tag]
 )
 
-service = DespesaService()
+service_despesa = DespesaService()
+service_usuario = UsuarioService()
 
 
 # =========================
 # CRIAR DESPESA
 # =========================
 @despesa_bp.post(
-    "",
+    "/criar",
     responses={200: DespesaViewSchema, 400: ErrorSchema}
 )
 def criar_despesa(body: DespesaSchema):
@@ -43,8 +48,8 @@ def criar_despesa(body: DespesaSchema):
     Cria uma nova despesa
     """
     try:
-        despesa = service.criar_despesa(body.model_dump())
-        return despesa, 200
+        despesa = service_despesa.criar_despesa(body.model_dump())
+        return DespesaViewSchema.model_validate(despesa).model_dump(), 200
     except ValueError as e:
         return {"message": str(e)}, 400
 
@@ -53,15 +58,18 @@ def criar_despesa(body: DespesaSchema):
 # LISTAR TODAS
 # =========================
 @despesa_bp.get(
-    "",
-    responses={200: ListagemDespesasSchema}
+    "/getallexpenses",
+    responses={200: ListagemDespesasSchema, 400: ErrorSchema}
 )
 def listar_despesas():
     """
     Lista todas as despesas
     """
-    despesas = service.listar_despesas()
-    return {"despesas": despesas}, 200
+    try:
+        despesas = service_despesa.listar_despesas()
+        return ListagemDespesasSchema(despesas=despesas).model_dump(), 200
+    except ValueError as e:
+        return {"message": str(e)}, 400
 
 
 # =========================
@@ -76,8 +84,8 @@ def buscar_despesa(path: DespesaBuscaSchema):
     Retorna uma despesa pelo ID
     """
     try:
-        despesa = service.buscar_despesa(path.id)
-        return despesa, 200
+        despesa = service_despesa.buscar_despesa(path.id)
+        return DespesaViewSchema.model_validate(despesa).model_dump(), 200
     except StopIteration:
         return {"message": "Despesa não encontrada"}, 404
 
@@ -94,11 +102,11 @@ def atualizar_despesa(path: DespesaBuscaSchema, body: DespesaUpdateSchema):
     Atualiza uma despesa parcialmente
     """
     try:
-        despesa = service.atualiza_despesa(
+        despesa = service_despesa.atualiza_despesa(
             path.id,
             body.model_dump(exclude_unset=True)
         )
-        return despesa, 200
+        return DespesaViewSchema.model_validate(despesa).model_dump(), 200
     except ValueError as e:
         return {"message": str(e)}, 404
 
@@ -108,15 +116,19 @@ def atualizar_despesa(path: DespesaBuscaSchema, body: DespesaUpdateSchema):
 # =========================
 @despesa_bp.delete(
     "/<int:id>",
-    responses={204: None, 404: ErrorSchema}
+    responses={200: DespesaDeleteSchema, 404: ErrorSchema}
 )
 def excluir_despesa(path: DespesaBuscaSchema):
     """
     Exclui uma despesa
     """
     try:
-        service.excluir_despesa(path.id)
-        return "", 204
+        service_despesa.excluir_despesa(path.id)
+        resultado = DespesaDeleteSchema (
+            id=path.id,
+            message="Despesa excluída com sucesso"
+        )
+        return resultado.model_dump(), 200
     except ValueError as e:
         return {"message": str(e)}, 404
 
@@ -124,26 +136,36 @@ def excluir_despesa(path: DespesaBuscaSchema):
 # =========================
 # TOTAIS
 # =========================
-@despesa_bp.get("/total")
+@despesa_bp.get(
+    "/total",
+    responses={200: DespesaTotalSchema, 404: ErrorSchema}
+)
 def total_despesas():
     """
     Retorna o valor total das despesas
     """
-    return {"total": service.calcula_despesas_totais()}, 200
+    try:
+        resultado_despesas_total = DespesaTotalSchema (
+            total=service_despesa.calcula_despesas_totais()
+        )
+        return resultado_despesas_total.model_dump(), 200
+    except ValueError as e:
+        return {"message": str(e)}, 404
 
 
 @despesa_bp.get(
-        "/total/usuario/<int:cpf>",
+        "/total/usuario/<string:cpf>",
         responses={200: DespesaViewUsuarioTotalSchema}
 )
 def total_por_usuario(path: UsuarioTotalPathSchema):
     """
     Total de despesas por usuário
     """
-    return {
-        "cpf": path.cpf,
-        "total": service.calcula_despesas_totais_por_usuario(path.cpf)
-    }, 200
+    resultado_usuario_total = DespesaViewUsuarioTotalSchema (
+        nome=service_usuario.obter_nome_usuario_por_cpf(path.cpf),
+        total=service_despesa.calcula_despesas_totais_por_usuario(path.cpf)
+    )
+    return resultado_usuario_total.model_dump(), 200
 
 
 @despesa_bp.get(
@@ -154,7 +176,8 @@ def total_por_tipo(path: TipoTotalPathSchema):
     """
     Total de despesas por tipo
     """
-    return {
-        "tipo": path.tipo,
-        "total": service.calcula_despesas_totais_por_tipo(path.tipo)
-    }, 200
+    resultado_tipo_total = DespesaViewTipoTotalSchema (
+        tipo = path.tipo,
+        total = service_despesa.calcula_despesas_totais_por_tipo(path.tipo)
+    )
+    return resultado_tipo_total.model_dump(), 200

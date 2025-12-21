@@ -1,5 +1,4 @@
 from flask_openapi3 import APIBlueprint, Tag
-
 from app.services.usuario_service import UsuarioService
 from app.schemas.error_schema import ErrorSchema
 from app.schemas.usuario_schema import (
@@ -30,8 +29,8 @@ service = UsuarioService()
 # CRIAR USUÁRIO
 # =========================
 @usuario_bp.post(
-    "",
-    responses={201: UsuarioViewSchema, 400: ErrorSchema}
+    "/cadastrar",
+    responses={200: UsuarioViewSchema, 400: ErrorSchema}
 )
 def cadastrar_usuario(body: UsuarioSchema):
     """
@@ -39,7 +38,7 @@ def cadastrar_usuario(body: UsuarioSchema):
     """
     try:
         usuario = service.criar_usuario(body.model_dump())
-        return usuario, 201
+        return UsuarioViewSchema.model_validate(usuario).model_dump(), 200
     except ValueError as e:
         return {"message": str(e)}, 400
 
@@ -48,21 +47,25 @@ def cadastrar_usuario(body: UsuarioSchema):
 # LISTAR USUÁRIOS
 # =========================
 @usuario_bp.get(
-    "",
-    responses={200: ListagemUsuariosSchema}
+    "/getallusers",
+    responses={200: ListagemUsuariosSchema, 400: ErrorSchema}
 )
 def listar_usuarios():
     """
     Lista todos os usuários
     """
-    return service.listar_usuarios(), 200
+    try:
+        usuarios=service.listar_usuarios()
+        return ListagemUsuariosSchema(usuarios=usuarios).model_dump(), 200
+    except ValueError as e:
+        return {"message": str(e)}, 400
 
 
 # =========================
 # BUSCAR USUÁRIO POR CPF
 # =========================
 @usuario_bp.get(
-    "/<int:cpf>",
+    "/<string:cpf>",
     responses={200: UsuarioViewSchema, 404: ErrorSchema}
 )
 def apresentar_usuario(path: UsuarioBuscaSchema):
@@ -71,7 +74,7 @@ def apresentar_usuario(path: UsuarioBuscaSchema):
     """
     try:
         usuario = service.obter_usuario(path.cpf)
-        return usuario, 200
+        return UsuarioViewSchema.model_validate(usuario).model_dump(), 200
     except ValueError as e:
         return {"message": str(e)}, 404
 
@@ -80,7 +83,7 @@ def apresentar_usuario(path: UsuarioBuscaSchema):
 # ATUALIZAR USUÁRIO
 # =========================
 @usuario_bp.put(
-    "/<int:cpf>",
+    "/<string:cpf>",
     responses={200: UsuarioViewSchema, 404: ErrorSchema}
 )
 def atualizar_usuario(path: UsuarioBuscaSchema, body: UsuarioUpdateSchema):
@@ -92,7 +95,7 @@ def atualizar_usuario(path: UsuarioBuscaSchema, body: UsuarioUpdateSchema):
             path.cpf,
             body.model_dump(exclude_unset=True)
         )
-        return usuario, 200
+        return UsuarioViewSchema.model_validate(usuario).model_dump(), 200
     except ValueError as e:
         return {"message": str(e)}, 404
 
@@ -101,7 +104,7 @@ def atualizar_usuario(path: UsuarioBuscaSchema, body: UsuarioUpdateSchema):
 # EXCLUIR USUÁRIO
 # =========================
 @usuario_bp.delete(
-    "/<int:cpf>",
+    "/<string:cpf>",
     responses={204: None, 404: ErrorSchema}
 )
 def excluir_usuario(path: UsuarioBuscaSchema):
@@ -110,6 +113,6 @@ def excluir_usuario(path: UsuarioBuscaSchema):
     """
     try:
         service.excluir_usuario(path.cpf)
-        return "", 204
+        return {"message": "Usuario Excluído com sucesso" }, 204
     except ValueError as e:
         return {"message": str(e)}, 404

@@ -1,5 +1,4 @@
 from flask import Flask, jsonify, request, redirect
-from flask_openapi3 import openapi, Info, Tag
 from flask_cors import CORS
 
 from urllib.parse import unquote

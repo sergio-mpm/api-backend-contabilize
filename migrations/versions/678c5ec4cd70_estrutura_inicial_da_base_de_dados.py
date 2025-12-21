@@ -1,8 +1,8 @@
-"""empty message
+"""Estrutura inicial da base de dados
 
-Revision ID: 7f5052f4058f
+Revision ID: 678c5ec4cd70
 Revises: 
-Create Date: 2025-12-19 01:59:36.882276
+Create Date: 2025-12-20 21:45:54.895448
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '7f5052f4058f'
+revision = '678c5ec4cd70'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -26,15 +26,15 @@ def upgrade():
     sa.PrimaryKeyConstraint('cpf')
     )
     op.create_table('despesas',
-    sa.Column('pk_despesa', sa.Integer(), nullable=False),
+    sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('nome', sa.String(length=150), nullable=False),
     sa.Column('valor', sa.Float(), nullable=False),
     sa.Column('tipo', sa.String(length=50), nullable=False),
     sa.Column('data_despesa', sa.Date(), nullable=True),
     sa.Column('comentario', sa.String(length=255), nullable=True),
-    sa.Column('cpf_responsavel', sa.String(length=11), nullable=False),
-    sa.ForeignKeyConstraint(['cpf_responsavel'], ['usuarios.cpf'], ),
-    sa.PrimaryKeyConstraint('pk_despesa')
+    sa.Column('cpf', sa.String(length=11), nullable=False),
+    sa.ForeignKeyConstraint(['cpf'], ['usuarios.cpf'], ),
+    sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###
 

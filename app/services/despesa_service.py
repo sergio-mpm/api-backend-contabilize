@@ -9,7 +9,7 @@ class DespesaService:
         if data["valor"] <= 0:
             raise ValueError("Valor Inválido")
         
-        usuario = Usuario.query.get(data["cpf_responsavel"])
+        usuario = Usuario.query.get(data["cpf"])
         if not usuario:
             raise ValueError("Usuario não encontrado")
         
@@ -19,7 +19,7 @@ class DespesaService:
             tipo=data["tipo"],
             data_despesa=data["data_despesa"],
             comentario=data["comentario"],
-            cpf_responsavel=data["cpf_responsavel"]
+            cpf=data["cpf"]
         )
 
         db.session.add(despesa)
@@ -37,7 +37,7 @@ class DespesaService:
         return despesa
 
     def listar_despesas_por_usuario(self, cpf: str):
-        return Despesa.query.filter(Despesa.cpf_responsavel==cpf).all()
+        return Despesa.query.filter(Despesa.cpf==cpf).all()
 
     def listar_despesas_por_tipo(self, tipo: str):
         return Despesa.query.filter(Despesa.tipo==tipo).all()
@@ -77,10 +77,10 @@ class DespesaService:
         if "data_despesa" in data:
             despesa.data_despesa = data["data_despesa"]
         
-        if "cpf_responsavel" in data:
-            if data["cpf_responsavel"] <= 0:
+        if "cpf" in data:
+            if data["cpf"] is None or "":
                 raise ValueError("CPF não pode ser zerado")
-            despesa.cpf_responsavel = data["cpf_responsavel"]
+            despesa.cpf = data["cpf"]
 
         db.session.commit()
         return despesa
@@ -96,7 +96,7 @@ class DespesaService:
     def calcula_despesas_totais_por_usuario(self, cpf: int) -> float:
         despesasTotais = (
             db.session.query(func.sum(Despesa.valor))
-            .filter(Despesa.cpf_responsavel == cpf)
+            .filter(Despesa.cpf == cpf)
             .scalar()
         )
         #Retorna despesas totais por cada usuário

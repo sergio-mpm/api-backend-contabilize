@@ -27,6 +27,13 @@ class UsuarioService:
         
         return usuario
     
+    def obter_nome_usuario_por_cpf(self, cpf):
+        usuario = Usuario.query.get(cpf)
+        if not usuario:
+            raise ValueError("Usuario não encontrado")
+        
+        return usuario.nome
+    
     def atualiza_cadastro_usuario(self, cpf: str, data: dict) -> Usuario:
         usuario = Usuario.query.get(cpf)
         if not usuario:

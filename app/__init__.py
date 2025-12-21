@@ -9,7 +9,7 @@ def create_app():
         version="1.0.0",
         description="API para controle de despesas, registradas por usuarios diversos"
     )
-    app = OpenAPI(__name__, info=info)
+    app = OpenAPI(__name__, info=info, doc_prefix="/v1")
 
     app.config.from_object(Config)
     CORS(app, resources={r"/*": {"origins": "*"}})
@@ -23,7 +23,10 @@ def create_app():
     #registro de rotas
     from app.controllers.despesa_controller import despesa_bp
     from app.controllers.usuario_controller import usuario_bp
+    from app.controllers.auth_controller import auth_bp
     app.register_api(despesa_bp)
     app.register_api(usuario_bp)
+    app.register_api(auth_bp)
+    # app.register_blueprint(auto_swagger)
 
     return app

@@ -9,10 +9,34 @@ from app.schemas import usuario_schema
 
 
 class DespesaSchema(BaseModel):
+    nome: str = "Cachorro Quente"
+    valor: float = "25.99"
+    tipo: str = "Alimentação"
+    data_despesa: datetime = datetime.now
+    cpf: str = "12345678900"
+    comentario: str = "Lanche da tarde"
+    
+    model_config = {
+        "from_attributes": True
+    }
+
+
+class DespesaViewSchema(BaseModel):
+    id: int
     nome: str
     valor: float
     tipo: str
-    data_despesa: datetime = datetime.now
+    data_despesa: datetime
+    comentario: str | None = None
+    responsavel: str | None = None
+    
+    model_config = {
+        "from_attributes": True
+    }
+
+
+class DespesaTotalSchema(BaseModel):
+    total: float
 
 
 class DespesaBuscaSchema(BaseModel):
@@ -24,31 +48,26 @@ class ListagemDespesasSchema(BaseModel):
 
 
 class UsuarioTotalPathSchema(BaseModel):
-    cpf: str
+    cpf: str = "12345678900"
 
 
 class TipoTotalPathSchema(BaseModel):
-    tipo: str
-
-
-class DespesaViewSchema(BaseModel):
-    id: int
-    nome: str
-    valor: float
-    tipo: str
-    data_despesa: datetime
-    comentario: str | None = None
-    responsavel: str | None = None
+    tipo: str = "Alimentação"
 
 
 class DespesaViewUsuarioTotalSchema(BaseModel):
-    cpf: str
+    nome: str = "João da Silva"
     total: float
 
 
 class DespesaViewTipoTotalSchema(BaseModel):
     typo: str
     total: float
+
+
+class DespesaDeleteSchema(BaseModel):
+    id: int
+    message: str
 
 
 def apresenta_despesas(despesas: List[Despesa]) -> dict:
@@ -61,7 +80,7 @@ def apresenta_despesas(despesas: List[Despesa]) -> dict:
                 "tipo": d.tipo,
                 "data_despesa": d.data_despesa,
                 "comentario": getattr(d, "comentario", None),
-                "responsavel": getattr(d.responsavel, "nome", None)
+                "cpf_responsavel": getattr(d.cpf, "nome", None)
             }
             for d in despesas
         ]
@@ -72,10 +91,10 @@ def get_nome_responsavel(self, obj):
 
 
 class DespesaUpdateSchema(BaseModel):
-    nome: str
-    valor: float
-    tipo: str
-    data_despesa: datetime
+    nome: str = "Dogão"
+    valor: float = "35.99"
+    tipo: str = "Alimentação"
+    data_despesa: datetime = datetime.now
     comentario: str | None = None
     responsavel: str | None = None
 
