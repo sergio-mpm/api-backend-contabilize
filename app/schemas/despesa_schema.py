@@ -29,6 +29,7 @@ class DespesaViewSchema(BaseModel):
     data_despesa: datetime
     comentario: str | None = None
     responsavel: str | None = None
+    cpf: str
     
     model_config = {
         "from_attributes": True

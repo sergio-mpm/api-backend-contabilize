@@ -13,7 +13,7 @@ class Despesa(db.Model):
     nome = db.Column(db.String(150), nullable=False)
     valor = db.Column(db.Float, nullable=False)
     tipo = db.Column(db.String(50), nullable=False)
-    data_despesa = db.Column(db.Date, default=datetime.now)
+    data_despesa = db.Column(db.DateTime, default=datetime.now)
     comentario = db.Column(db.String(255), nullable=True)
 
     cpf = Column(

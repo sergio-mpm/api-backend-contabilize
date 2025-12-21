@@ -1,8 +1,8 @@
-"""Estrutura inicial da base de dados
+"""Estrutura basica da base de dados
 
-Revision ID: 678c5ec4cd70
+Revision ID: 91cf9d8c26f4
 Revises: 
-Create Date: 2025-12-20 21:45:54.895448
+Create Date: 2025-12-21 14:29:30.229879
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '678c5ec4cd70'
+revision = '91cf9d8c26f4'
 down_revision = None
 branch_labels = None
 depends_on = None

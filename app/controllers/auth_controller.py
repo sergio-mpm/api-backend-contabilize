@@ -16,7 +16,7 @@ auth_bp = APIBlueprint(
     abp_tags=[auth_tag]
 )
 
-service = UsuarioService()
+service_usuario = UsuarioService()
 
 
 @auth_bp.post(
@@ -28,6 +28,6 @@ def login(body: AuthSchema):
     """
     Login do usuário (CPF)
     """
-    usuario = service.apresenta_usuario(body["cpf"])
+    usuario = service_usuario.obter_usuario(body.cpf)
     token = create_access_token(identity=usuario.cpf)
     return {"access_token": token}, 200

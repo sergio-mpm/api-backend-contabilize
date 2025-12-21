@@ -26,6 +26,7 @@ class UsuarioViewSchema(BaseModel):
     cpf: str = "12345678900"
     nome: str = "João da Silva"
     email: str = "seuemail@email.com.br"
+    data_nascimento: datetime = "1991-09-01"
     
     model_config = {
         "from_attributes": True

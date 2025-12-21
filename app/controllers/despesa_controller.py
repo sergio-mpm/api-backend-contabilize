@@ -1,8 +1,11 @@
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from flask_openapi3 import APIBlueprint, Tag
 from flask_openapi3 import openapi
 from datetime import datetime
 
+from app.services.auth_service import AuthService
 from app.services.despesa_service import DespesaService
+from app.services.usuario_service import UsuarioService
 from app.schemas.error_schema import ErrorSchema
 from app.schemas.despesa_schema import (
     DespesaDeleteSchema,
@@ -17,7 +20,6 @@ from app.schemas.despesa_schema import (
     TipoTotalPathSchema,
     UsuarioTotalPathSchema
 )
-from app.services.usuario_service import UsuarioService
 
 
 despesa_tag = Tag(
@@ -34,6 +36,7 @@ despesa_bp = APIBlueprint(
 
 service_despesa = DespesaService()
 service_usuario = UsuarioService()
+service_auth = AuthService()
 
 
 # =========================
@@ -47,6 +50,7 @@ def criar_despesa(body: DespesaSchema):
     """
     Cria uma nova despesa
     """
+    
     try:
         despesa = service_despesa.criar_despesa(body.model_dump())
         resultado = DespesaViewSchema (
@@ -56,7 +60,8 @@ def criar_despesa(body: DespesaSchema):
             tipo = despesa.tipo,
             data_despesa = despesa.data_despesa,
             comentario = despesa.comentario,
-            responsavel = service_usuario.obter_nome_usuario_por_cpf(despesa.cpf)
+            responsavel = service_usuario.obter_nome_usuario_por_cpf(despesa.cpf),
+            cpf = despesa.cpf
         )
         return resultado.model_dump(), 200
     except ValueError as e:
@@ -76,7 +81,7 @@ def listar_despesas():
     """
     try:
         despesas = service_despesa.listar_despesas()
-        listagem_despesas_nome = service_despesa.serializar_nome_responsavel_despesa(despesas)
+        listagem_despesas_nome = service_despesa.serializar_lista_nome_responsavel_despesa(despesas)
         listagem_despesas = ListagemDespesasSchema(despesas=listagem_despesas_nome)
         return listagem_despesas.model_dump(), 200
     except ValueError as e:
@@ -96,7 +101,9 @@ def buscar_despesa(path: DespesaBuscaSchema):
     """
     try:
         despesa = service_despesa.buscar_despesa(path.id)
-        return DespesaViewSchema.model_validate(despesa).model_dump(), 200
+        cpfToken = get_jwt_identity()
+        resultado = service_despesa.serializar_nome_responsavel_despesa(despesa, cpfToken)
+        return DespesaViewSchema.model_validate(resultado).model_dump(), 200
     except StopIteration:
         return {"message": "Despesa não encontrada"}, 404
 
@@ -106,12 +113,17 @@ def buscar_despesa(path: DespesaBuscaSchema):
 # =========================
 @despesa_bp.put(
     "/<int:id>",
+    security=[{"bearerAuth": []}],
     responses={200: DespesaViewSchema, 404: ErrorSchema}
 )
+@jwt_required()
 def atualizar_despesa(path: DespesaBuscaSchema, body: DespesaUpdateSchema):
     """
     Atualiza uma despesa parcialmente
     """
+    if service_auth.autorizar_atualizar_despesa(path.id, get_jwt_identity()) is False:
+        return {"message:", "Somente usuário responsável pode atualizar essa despesa."}
+    
     try:
         despesa = service_despesa.atualiza_despesa(
             path.id,

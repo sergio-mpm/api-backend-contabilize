@@ -1,3 +1,4 @@
+from flask_jwt_extended import jwt_required
 from flask_openapi3 import APIBlueprint, Tag
 from app.services.usuario_service import UsuarioService
 from app.schemas.error_schema import ErrorSchema

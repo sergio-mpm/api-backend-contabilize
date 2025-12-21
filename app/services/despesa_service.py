@@ -58,7 +58,23 @@ class DespesaService:
         db.session.delete(despesa)
         db.session.commit()
         
-    def serializar_nome_responsavel_despesa(self, despesas: list[Despesa]):
+    def serializar_nome_responsavel_despesa(self, despesa: Despesa, cpf: str):
+        usuario = Usuario.query.get(cpf)
+        despesa_view = DespesaViewSchema (
+            id = despesa.id,
+            nome = despesa.nome,
+            valor = despesa.valor,
+            tipo = despesa.tipo,
+            data_despesa = despesa.data_despesa,
+            comentario = despesa.comentario,
+            responsavel = usuario.nome if usuario else None,
+            cpf = despesa.cpf
+        )
+        
+        return despesa_view
+
+        
+    def serializar_lista_nome_responsavel_despesa(self, despesas: list[Despesa]):
         lista_view_despesas = []
         for despesa in despesas:
             usuario = Usuario.query.get(despesa.cpf)
@@ -69,7 +85,8 @@ class DespesaService:
                 tipo = despesa.tipo,
                 data_despesa = despesa.data_despesa,
                 comentario = despesa.comentario,
-                responsavel = usuario.nome if usuario else None
+                responsavel = usuario.nome if usuario else None,
+                cpf = despesa.cpf
             )
             lista_view_despesas.append(despesa_view)
         
