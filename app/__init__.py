@@ -7,7 +7,7 @@ from .security import bearer_auth
 
 def create_app():
     info = Info(
-        title="ContabilizeAPI",
+        title="GasteiAPI",
         version="1.0.0",
         description="API para controle de despesas, registradas por usuarios diversos"
     )
