@@ -4,7 +4,7 @@ from app.extensions import db
 from datetime import datetime
 from sqlalchemy import func
 
-from app.schemas.despesa_schema import DespesaViewSchema
+from app.schemas.despesa_schema import DespesaViewSchema, ListagemDespesasSchema
 
 class DespesaService:
     def criar_despesa(self, data: dict) -> Despesa:
@@ -59,7 +59,7 @@ class DespesaService:
         db.session.commit()
         
     def serializar_nome_responsavel_despesa(self, despesas: list[Despesa]):
-        lista_view_despesas = list[DespesaViewSchema]
+        lista_view_despesas = []
         for despesa in despesas:
             usuario = Usuario.query.get(despesa.cpf)
             despesa_view = DespesaViewSchema (
@@ -74,7 +74,6 @@ class DespesaService:
             lista_view_despesas.append(despesa_view)
         
         return lista_view_despesas
-            
 
     def atualiza_despesa(self, id: int, data: dict) -> Despesa:
         despesa = Despesa.query.get(id)

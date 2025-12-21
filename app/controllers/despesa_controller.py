@@ -76,7 +76,9 @@ def listar_despesas():
     """
     try:
         despesas = service_despesa.listar_despesas()
-        return ListagemDespesasSchema(despesas=despesas).model_dump(), 200
+        listagem_despesas_nome = service_despesa.serializar_nome_responsavel_despesa(despesas)
+        listagem_despesas = ListagemDespesasSchema(despesas=listagem_despesas_nome)
+        return listagem_despesas.model_dump(), 200
     except ValueError as e:
         return {"message": str(e)}, 400
 
