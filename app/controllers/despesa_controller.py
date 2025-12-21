@@ -49,7 +49,16 @@ def criar_despesa(body: DespesaSchema):
     """
     try:
         despesa = service_despesa.criar_despesa(body.model_dump())
-        return DespesaViewSchema.model_validate(despesa).model_dump(), 200
+        resultado = DespesaViewSchema (
+            id = despesa.id,
+            nome = despesa.nome,
+            valor = despesa.valor,
+            tipo = despesa.tipo,
+            data_despesa = despesa.data_despesa,
+            comentario = despesa.comentario,
+            responsavel = service_usuario.obter_nome_usuario_por_cpf(despesa.cpf)
+        )
+        return resultado.model_dump(), 200
     except ValueError as e:
         return {"message": str(e)}, 400
 

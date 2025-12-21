@@ -44,7 +44,7 @@ class DespesaBuscaSchema(BaseModel):
 
 
 class ListagemDespesasSchema(BaseModel):
-    despesas: List[DespesaSchema]
+    despesas: List[DespesaViewSchema]
 
 
 class UsuarioTotalPathSchema(BaseModel):
@@ -61,7 +61,7 @@ class DespesaViewUsuarioTotalSchema(BaseModel):
 
 
 class DespesaViewTipoTotalSchema(BaseModel):
-    typo: str
+    tipo: str
     total: float
 
 

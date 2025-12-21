@@ -4,6 +4,8 @@ from app.extensions import db
 from datetime import datetime
 from sqlalchemy import func
 
+from app.schemas.despesa_schema import DespesaViewSchema
+
 class DespesaService:
     def criar_despesa(self, data: dict) -> Despesa:
         if data["valor"] <= 0:
@@ -55,6 +57,24 @@ class DespesaService:
         
         db.session.delete(despesa)
         db.session.commit()
+        
+    def serializar_nome_responsavel_despesa(self, despesas: list[Despesa]):
+        lista_view_despesas = list[DespesaViewSchema]
+        for despesa in despesas:
+            usuario = Usuario.query.get(despesa.cpf)
+            despesa_view = DespesaViewSchema (
+                id = despesa.id,
+                nome = despesa.nome,
+                valor = despesa.valor,
+                tipo = despesa.tipo,
+                data_despesa = despesa.data_despesa,
+                comentario = despesa.comentario,
+                responsavel = usuario.nome if usuario else None
+            )
+            lista_view_despesas.append(despesa_view)
+        
+        return lista_view_despesas
+            
 
     def atualiza_despesa(self, id: int, data: dict) -> Despesa:
         despesa = Despesa.query.get(id)
