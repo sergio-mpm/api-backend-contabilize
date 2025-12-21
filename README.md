@@ -10,4 +10,4 @@ Primeiramente foi criado um ambiente virtual para execução e controle de versi
 
 ### Criando o Ambiente Virtual
 
-Na pasta do projeto foi executado o comando
+Na pasta do projeto foi executado o comando para criação do ambiente virtual Python, utilizada a versão Python 3.12 para sua criação.
