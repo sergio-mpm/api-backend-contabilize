@@ -32,6 +32,12 @@ MANIFEST
 *.manifest
 *.spec
 
+# Pastas
+migrations/
+contabilize_venv/
+database.*
+
+
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
