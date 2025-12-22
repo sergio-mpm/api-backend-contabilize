@@ -14,25 +14,25 @@ Na pasta do projeto foi executado o comando para criação do ambiente virtual P
 
 O comando a ser utilizado para criação do banco de dados é 
 
---> python -m venv gastei_venv
+--> ```python -m venv gastei_venv```
 
 Após isso será criado o ambiente virtual para o projeto e ali devem ser instaladas as dependencias do projeto.
 
 Ative o ambiente virtual com o seguinte comando:
 
---> .gastei_venv/Scripts/activate.ps1
+--> ```.gastei_venv/Scripts/activate.ps1```
 
 Assim aparecerá o ambiente virtual ativo antes do path e poderá instalar as dependencias com o seguinte comando:
 
---> python -m pip install requirements.txt
+--> ```python -m pip install requirements.txt```
 
 Caso alguma dependencia não seja instalada, como ocorreu em alguns casos de testes em máquinas diferentes, recomendo que seja validada a instalação das bibliotecas que deram algum problema, seguem os comandos:
-
+```
 --> python -m pip install flask-cors
 --> python -m pip install flask-openapi3
 --> python -m pip install SQLAlchemy
 --> python -m pip install -U flask-openapi3[swagger,redoc,rapidoc,rapipdf,scalar,elements]
-
+```
 Algumas dessas bibliotecas infelizmente não vieram junto ao executar a instalação dos requirements, sempre importante validar.
 
 Agora com as requisições instaladas, precisamos ir para a criação e instanciação do banco de dados.
@@ -43,19 +43,19 @@ O banco de dados da aplicação é gerado automaticamente através do flask migr
 
 Devemos iniciar a construção do banco de dados através do comando a seguir:
 
---> flask db init
+--> ```flask db init```
 
 Isso fará com que o sistema gere o database.db , que receberá os dados da nossa aplicação.
 
 Após iniciar devemos gerar a primeira migration, que é um versionamento de instância do nosso banco de dados. Seguindo o comando:
 
---> flask db migrate -m "Estrutura Inicial da base de dados"
+--> ```flask db migrate -m "Estrutura Inicial da base de dados"```
 
 Assim criaremos uma migration com uma label de Estrutura Inicial da base de dados, nos ajudará a identificar esse primeiro passo.
 
 Após isso feito, o comando para instanciar na base de dados deverá ser executado:
 
---> flask db upgrade
+--> ```flask db upgrade```
 
 Assim, teremos todas nossas classes no banco de dados conforme previsto.
 
@@ -63,7 +63,7 @@ Assim, teremos todas nossas classes no banco de dados conforme previsto.
 
 Agora que temos nosso ambiente configurado, nosso banco de dados instanciado, devemos iniciar a aplicação backend. O comando a seguir irá iniciar a aplicação:
 
---> python app.py
+--> ```python app.py```
 
 Assim, teremos nossa aplicação funcionando em ambiente local, normalmente configurada para a rota http://localhost:5000.
 
