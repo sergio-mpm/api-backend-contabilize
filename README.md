@@ -20,7 +20,7 @@ Após isso será criado o ambiente virtual para o projeto e ali devem ser instal
 
 Ative o ambiente virtual com o seguinte comando:
 
---> .gastei_venv/Scripts/activate.ps1
+--> '.gastei_venv/Scripts/activate.ps1'
 
 Assim aparecerá o ambiente virtual ativo antes do path e poderá instalar as dependencias com o seguinte comando:
 
