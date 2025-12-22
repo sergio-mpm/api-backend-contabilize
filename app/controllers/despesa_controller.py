@@ -103,8 +103,8 @@ def buscar_despesa(path: DespesaBuscaSchema):
         despesa = service_despesa.buscar_despesa(path.id)
         resultado = service_despesa.serializar_nome_responsavel_despesa(despesa, despesa.cpf)
         return DespesaViewSchema.model_validate(resultado).model_dump(), 200
-    except StopIteration:
-        return {"message": "Despesa não encontrada"}, 404
+    except ValueError as e:
+        return {"message": str(e)}, 404
 
 
 # =========================
